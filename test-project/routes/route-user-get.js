@@ -1,10 +1,9 @@
 import AWS from "aws-sdk";
 
-const USERS_TABLE = process.env.USERS_TABLE;
-const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
-
 function routeUserGet() {
   return async (req, res) => {
+    const USERS_TABLE = process.env.USERS_TABLE;
+    const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
     const params = {
       TableName: USERS_TABLE,
       Key: {

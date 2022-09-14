@@ -1,14 +1,6 @@
 import getExpressApp from "./routes/index.js";
 import serverless from "serverless-http";
+import express from "express";
 
-const app = getExpressApp();
 
-app.use(express.json());
-
-app.use((req, res, next) => {
-  return res.status(404).json({
-    error: "Not Found",
-  });
-});
-
-module.exports.handler = serverless(app);
+module.exports.handler = serverless(getExpressApp());

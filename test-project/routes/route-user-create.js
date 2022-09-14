@@ -1,10 +1,10 @@
 import AWS from "aws-sdk";
 
-const USERS_TABLE = process.env.USERS_TABLE;
-const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 
 function routeUserCreate() {
   return async (req, res) => {
+    const USERS_TABLE = process.env.USERS_TABLE;
+    const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
     const { userId, name } = req.body;
     if (typeof userId !== "string") {
       res.status(400).json({ error: '"userId" must be a string' });
