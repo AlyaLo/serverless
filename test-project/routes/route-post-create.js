@@ -3,7 +3,12 @@ import AWS from "aws-sdk";
 function routePostCreate() {
   return async (req, res) => {
     const POSTS_TABLE = process.env.POSTS_TABLE;
-    const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
+    const dynamoDbClientParams = {};
+    if (process.env.IS_OFFLINE) {
+      dynamoDbClientParams.region = "localhost";
+      dynamoDbClientParams.endpoint = "http://localhost:8000";
+    }
+    dynamoDbClient = new AWS.DynamoDB.DocumentClient(dynamoDbClientParams);
     const { text, postId, userId } = req.body;
     if (typeof userId !== "string") {
       res.status(400).json({ error: '"userId" must be a string' });

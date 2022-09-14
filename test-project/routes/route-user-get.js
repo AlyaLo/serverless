@@ -3,7 +3,12 @@ import AWS from "aws-sdk";
 function routeUserGet() {
   return async (req, res) => {
     const USERS_TABLE = process.env.USERS_TABLE;
-    const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
+    const dynamoDbClientParams = {};
+    if (process.env.IS_OFFLINE) {
+      dynamoDbClientParams.region = "localhost";
+      dynamoDbClientParams.endpoint = "http://localhost:8000";
+    }
+    const dynamoDbClient = new AWS.DynamoDB.DocumentClient(dynamoDbClientParams);
     const params = {
       TableName: USERS_TABLE,
       Key: {

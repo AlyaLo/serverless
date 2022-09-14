@@ -6,4 +6,4 @@ function getExpressApp() {
   return app;
 }
 
-export default getExpressApp
+export default getExpressApp;

@@ -4,7 +4,12 @@ import AWS from "aws-sdk";
 function routePostGet() {
   return async (req, res) => {
     const POSTS_TABLE = process.env.POSTS_TABLE;
-    const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
+    const dynamoDbClientParams = {};
+    if (process.env.IS_OFFLINE) {
+      dynamoDbClientParams.region = "localhost";
+      dynamoDbClientParams.endpoint = "http://localhost:8000";
+    }
+    const dynamoDbClient = new AWS.DynamoDB.DocumentClient(dynamoDbClientParams);
     const params = {
       TableName: POSTS_TABLE,
       Key: {
