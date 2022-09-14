@@ -1,4 +1,4 @@
-const AWS = require("aws-sdk");
+import AWS from "aws-sdk";
 
 const POSTS_TABLE = process.env.POSTS_TABLE;
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();

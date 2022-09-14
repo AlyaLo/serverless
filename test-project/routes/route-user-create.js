@@ -1,4 +1,4 @@
-const AWS = require("aws-sdk");
+import AWS from "aws-sdk";
 
 const USERS_TABLE = process.env.USERS_TABLE;
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();

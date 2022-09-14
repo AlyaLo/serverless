@@ -1,8 +1,8 @@
 {
-  "type": "module",
   "name": "test-project",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "dependencies": {
     "express": "^4.17.1",
     "serverless-http": "^2.7.0"
