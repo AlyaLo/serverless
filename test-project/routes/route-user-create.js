@@ -10,7 +10,7 @@ function routeUserCreate() {
     }
     const dynamoDbClient = new AWS.DynamoDB.DocumentClient(dynamoDbClientParams);
     const { userId, name } = req.query;
-    console.log(req);
+
     if (typeof userId !== "string") {
       res.status(400).json({ error: '"userId" must be a string' });
     } else if (typeof name !== "string") {

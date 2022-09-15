@@ -1,14 +1,10 @@
 org: alyalo
 app: test
-service: test-project
-frameworkVersion: '3'
+service: ttttest
+frameworkVersion: "3"
 
-plugins:
-  - serverless-offline
-  - serverless-dynamodb-local
 custom:
-  tableNameUser: 'users-tbl-${sls:stage}'
-  tableNamePost: 'posts-tbl-${sls:stage}'
+  tableName: "test-table-${sls:stage}"
 
 provider:
   name: aws
@@ -25,32 +21,19 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            - Fn::GetAtt: [ UsersTable, Arn ]
-            - Fn::GetAtt: [ PostsTable, Arn ]
+            - Fn::GetAtt: [UsersTable, Arn]
   environment:
-    USERS_TABLE: ${self:custom.tableNameUser}
-    POSTS_TABLE: ${self:custom.tableNamePost}
+    USERS_TABLE: ${self:custom.tableName}
 
 functions:
   api:
-    handler: handler.default
+    handler: handler.handler
     events:
-      - httpApi: '*'
+      - httpApi: "*"
 
 resources:
   Resources:
     UsersTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: userId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: userId
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.tableNameUser}
-    PostsTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
@@ -64,4 +47,4 @@ resources:
           - AttributeName: userId
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.tableNamePost}
+        TableName: ${self:custom.tableName}
