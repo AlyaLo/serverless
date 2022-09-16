@@ -18,7 +18,7 @@ function routePostGet() {
     };
 
     try {
-      const { Item } = await dynamoDbClient.get(params).promise();
+      const { Item } = await dynamoDbClient.query(params).promise();
       if (Item) {
         const { text, postId, userId } = Item;
         res.json({ text, postId, userId });

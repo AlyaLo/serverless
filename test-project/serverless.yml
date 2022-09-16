@@ -3,16 +3,21 @@ app: test
 service: test-project
 frameworkVersion: '3'
 
+package:
+  individually: true
+
 plugins:
-  - serverless-offline
-  - serverless-dynamodb-local
+  - serverless-esbuild
+
 custom:
-  tableNameUser: 'users-tbl-${sls:stage}'
   tableNamePost: 'posts-tbl-${sls:stage}'
+  esbuild:
+    bundle: true
+    minify: false
 
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs16.x
   iam:
     role:
       statements:
@@ -25,10 +30,8 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            - Fn::GetAtt: [ UsersTable, Arn ]
             - Fn::GetAtt: [ PostsTable, Arn ]
   environment:
-    USERS_TABLE: ${self:custom.tableNameUser}
     POSTS_TABLE: ${self:custom.tableNamePost}
 
 functions:
@@ -39,29 +42,18 @@ functions:
 
 resources:
   Resources:
-    UsersTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: userId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: userId
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.tableNameUser}
     PostsTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: postId
+          - AttributeName: categoryId
             AttributeType: S
-          - AttributeName: userId
+          - AttributeName: creationDate
             AttributeType: S
         KeySchema:
-          - AttributeName: postId
+          - AttributeName: categoryId
             KeyType: HASH
-          - AttributeName: userId
+          - AttributeName: creationDate
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.tableNamePost}
