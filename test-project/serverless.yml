@@ -1,19 +1,24 @@
 org: alyalo
 app: test
 service: test-project
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 package:
   individually: true
 
 plugins:
+  - serverless-offline
   - serverless-esbuild
 
 custom:
-  tableNamePost: 'posts-tbl-${sls:stage}'
+  tableNamePost: "posts-tbl-${sls:stage}"
   esbuild:
     bundle: true
+    concurrency: 10
     minify: false
+    packager: npm
+    watch:
+      pattern: ["**/*.js"]
 
 provider:
   name: aws
@@ -30,15 +35,21 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            - Fn::GetAtt: [ PostsTable, Arn ]
+            - Fn::GetAtt: [PostsTable, Arn]
   environment:
     POSTS_TABLE: ${self:custom.tableNamePost}
 
 functions:
-  api:
-    handler: handler.default
+  getPosts:
     events:
-      - httpApi: '*'
+      - httpApi: "GET /posts/{categoryId}"
+    handler: src/post-get/handler.default
+    memorySize: 256
+  createPosts:
+    events:
+      - httpApi: "POST /posts"
+    handler: src/post-create/handler.default
+    memorySize: 256
 
 resources:
   Resources:
