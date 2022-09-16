@@ -5,12 +5,14 @@ const handler = async (event) => {
     const dynamoDb = new AWS.DynamoDB.DocumentClient();
     const categoryId = event.pathParameters?.categoryId;
     const result = await dynamoDb
-      .scan({
-        ExclusiveStartKey: lastEvaluatedKey,
+      .query({
         ExpressionAttributeValues: {
-          ":categoryId": { S: categoryId },
+          ":categoryId": categoryId,
         },
-        FilterExpression: "categoryId = :categoryId",
+        ExpressionAttributeNames: {
+          "#categoryId": "categoryId",
+        },
+        KeyConditionExpression: "#categoryId = :categoryId",
         Select: "ALL_ATTRIBUTES",
         TableName: process.env.POSTS_TABLE,
       })
@@ -27,3 +29,5 @@ const handler = async (event) => {
     };
   }
 };
+
+export default handler;
