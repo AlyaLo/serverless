@@ -1,17 +1,13 @@
 org: alyalo
 app: test
-service: test-project
+service: test-progect2
 frameworkVersion: "3"
 
-package:
-  individually: true
-
 plugins:
-  - serverless-offline
   - serverless-esbuild
 
 custom:
-  tableNamePost: "posts-tbl-${sls:stage}"
+  tableName: "categoreis-table-${sls:stage}"
   esbuild:
     bundle: true
     concurrency: 10
@@ -36,47 +32,42 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            - Fn::GetAtt: [PostsTable, Arn]
+            - Fn::GetAtt: [CategoriesTable, Arn]
   environment:
-    POSTS_TABLE: ${self:custom.tableNamePost}
+    AWS_PROVIDER_REGION: ${self:provider.region}
+    CATEGORIES_TABLE: ${self:custom.tableName}
+    EVENT_BUS_NAME: event-bus-${sls:stage}
+    EVENT_BUS_SERVICE_SOURCE: ${self:org}.${self:service}
 
 functions:
-  getPosts:
+  getCategories:
     events:
-      - httpApi: "GET /posts/{categoryId}"
-    handler: src/post-get/handler.default
+      - httpApi: "GET /categories/{categoryId}"
+    handler: src/category-get/handler.default
     memorySize: 256
-  createFirstPosts:
-    handler: src/first-post-create/handler.default
+  createCategories:
     events:
-      - eventBridge:
-          eventBus: ${output:test-progect2.eventBusArn}
-          pattern:
-            source:
-              - ${self:org}.test-progect2
-            detail-type:
-              - createWelcomePost
-    memorySize: 256
-  createPosts:
-    events:
-      - httpApi: "POST /posts"
-    handler: src/post-create/handler.default
+      - httpApi: "POST /categories"
+    handler: src/category-create/handler.default
     memorySize: 256
 
 resources:
   Resources:
-    PostsTable:
+    CategoriesTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
           - AttributeName: categoryId
             AttributeType: S
-          - AttributeName: creationDate
-            AttributeType: S
         KeySchema:
           - AttributeName: categoryId
             KeyType: HASH
-          - AttributeName: creationDate
-            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:custom.tableNamePost}
+        TableName: ${self:custom.tableName}
+    EventBus:
+      Type: AWS::Events::EventBus
+      Properties:
+        Name: event-bus-${sls:stage}
+
+outputs:
+  eventBusArn: !GetAtt EventBus.Arn
