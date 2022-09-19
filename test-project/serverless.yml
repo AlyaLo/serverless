@@ -31,8 +31,7 @@ provider:
           Action:
             - dynamodb:*
             - lambda:*
-          Resource:
-            - Fn::GetAtt: [PostsTable, Arn]
+          Resource: "*"
   environment:
     POSTS_TABLE: ${self:custom.tableNamePost}
 
@@ -42,7 +41,7 @@ functions:
       - httpApi: "GET /posts/{categoryId}"
     handler: src/post-get/handler.default
     memorySize: 256
-  createFirstPosts:
+  createFirstPost:
     handler: src/first-post-create/handler.default
     events:
       - eventBridge:

@@ -3,6 +3,10 @@ app: test
 service: test-progect2
 frameworkVersion: "3"
 
+
+package:
+  individually: true
+  
 plugins:
   - serverless-esbuild
 
