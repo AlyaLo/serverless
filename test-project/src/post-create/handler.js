@@ -1,38 +1,36 @@
 import AWS from "aws-sdk";
+import { StatusCodes } from "http-status-codes";
+import { v4 as uuidv4 } from "uuid";
 
 const handler = async (event) => {
   try {
     const dynamoDb = new AWS.DynamoDB.DocumentClient();
-    const { categoryId, userName, text, ...props } = JSON.parse(event.body);
-    await dynamoDb
-      .put(
-        {
-          Item: {
-            categoryId: categoryId,
-            creationDate: new Date().toISOString(),
-            userName: userName,
-            text: text,
-            ...props,
-          },
-          TableName: process.env.POSTS_TABLE,
-        },
-        function (err, data) {
-          if (err) console.log(err);
-          else console.log(data);
-        }
-      )
-      .promise();
+    const { categoryId, userName, text } = JSON.parse(event.body);
+    const params = {
+      Item: {
+        categoryId: categoryId,
+        creationDate: new Date().toISOString(),
+        id: uuidv4(),
+        text: text,
+        userName: userName,
+      },
+      TableName: process.env.POSTS_TABLE,
+    };
+    await dynamoDb.put(params).promise();
     return {
-      statusCode: 201,
-      isBase64Encoded: false,
-      body: "{\n  \"TotalCodeSize\": 104330022,}"
+      headers: {
+        "Content-Type": "application/json",
+      },
+      statusCode: StatusCodes.CREATED,
+      body: JSON.stringify(params.Item),
     };
   } catch (error) {
     return {
-      error: {
-        message: error.message,
-        type: error.type,
+      headers: {
+        "Content-Type": "application/json",
       },
+      statusCode: StatusCodes.BAD_REQUEST,
+      body: "",
     };
   }
 };
