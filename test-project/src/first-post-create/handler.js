@@ -17,13 +17,7 @@ const handler = async (event) => {
       TableName: process.env.POSTS_TABLE,
     };
     await dynamoDb.put(params).promise();
-    return {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      statusCode: StatusCodes.CREATED,
-      body: JSON.stringify(params.Item),
-    };
+    return {};
   } catch (error) {
     return {
       headers: {

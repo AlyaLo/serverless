@@ -25,14 +25,9 @@ provider:
       statements:
         - Effect: Allow
           Action:
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-            - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
-          Resource:
-            - Fn::GetAtt: [CategoriesTable, Arn]
+            - dynamodb:*
+            - lambda:*
+          Resource: "*"
   environment:
     AWS_PROVIDER_REGION: ${self:provider.region}
     CATEGORIES_TABLE: ${self:custom.tableName}
