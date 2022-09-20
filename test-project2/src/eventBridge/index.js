@@ -2,9 +2,11 @@ import AWS from "aws-sdk";
 
 async function invokeСreateWelcomePost({ categoryId, userName }) {
   try {
-    const eventBridge = new AWS.EventBridge({ region: process.env.AWS_PROVIDER_REGION });
-    await eventBridge
-      .putEvents({
+    const eventBridge = new AWS.EventBridge({ region: process.env.AWS_PROVIDER_REGION, apiVersion: "2015-10-07" });
+    console.log(process.env.EVENT_BUS_NAME)
+    console.log(process.env.EVENT_BUS_SERVICE_SOURCE)
+    await eventBridge.putEvents(
+      {
         Entries: [
           {
             Detail: JSON.stringify({
@@ -17,8 +19,12 @@ async function invokeСreateWelcomePost({ categoryId, userName }) {
             Source: process.env.EVENT_BUS_SERVICE_SOURCE,
           },
         ],
-      })
-      .promise();
+      },
+      function (err, data) {
+        if (err) console.log(err);
+        else console.log(data + " succeessss");
+      }
+    );
   } catch (error) {
     return {
       type: error.type,
