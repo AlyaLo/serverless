@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 const handler = async (event) => {
   try {
     const dynamoDb = new AWS.DynamoDB.DocumentClient();
-    const { categoryId, userName, text } = JSON.parse(event.detail);
+    const { categoryId, userName, text } = event.detail;
     const params = {
       Item: {
         categoryId: categoryId,

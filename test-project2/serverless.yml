@@ -6,7 +6,7 @@ frameworkVersion: "3"
 
 package:
   individually: true
-  
+
 plugins:
   - serverless-esbuild
 
@@ -31,6 +31,7 @@ provider:
           Action:
             - dynamodb:*
             - lambda:*
+            - events:*
           Resource: "*"
   environment:
     AWS_PROVIDER_REGION: ${self:provider.region}

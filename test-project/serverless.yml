@@ -31,6 +31,7 @@ provider:
           Action:
             - dynamodb:*
             - lambda:*
+            - events:*
           Resource: "*"
   environment:
     POSTS_TABLE: ${self:custom.tableNamePost}
