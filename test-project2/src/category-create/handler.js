@@ -20,7 +20,6 @@ const handler = async (event) => {
     const params = {
       Item: {
         categoryId: categoryId,
-        id: uuidv4(),
         userName: userName,
       },
       TableName: process.env.CATEGORIES_TABLE,

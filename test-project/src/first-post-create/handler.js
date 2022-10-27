@@ -19,13 +19,8 @@ const handler = async (event) => {
     await dynamoDb.put(params).promise();
     return {};
   } catch (error) {
-    return {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      statusCode: StatusCodes.BAD_REQUEST,
-      body: "",
-    };
+    console.log(error)
+    return {};
   }
 };
 
